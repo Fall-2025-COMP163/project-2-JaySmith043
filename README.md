@@ -1,4 +1,4 @@
-# Project 2 – Inheritance RPG
+# Project 2 – Character Abilities Showcase
 
 ## Overview
 
