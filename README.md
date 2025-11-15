@@ -1,147 +1,112 @@
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/mMxhKicI)
-[![Open in Visual Studio Code](https://classroom.github.com/assets/open-in-vscode-2e0aaae1b6195c2367325f4f02e2d04e9abb55f0b24a779b69b11b9e10269abc.svg)](https://classroom.github.com/online_ide?assignment_repo_id=21668273&assignment_repo_type=AssignmentRepo)
-# COMP 163 - Project 2: Character Abilities Showcase
+# Project 2 – Inheritance RPG
 
-## 🎯 Project Overview
+## Overview
 
-Build a simple character system that demonstrates mastery of object-oriented programming fundamentals: inheritance, method overriding, polymorphism, and composition. This project focuses on core OOP concepts without the complexity of a full game system.
+This project implements a simple role-playing game (RPG) battle system to demonstrate **classes**, **inheritance**, **method overriding**, and **composition** in Python, using only concepts covered through the **Inheritance** chapter.
 
-## 📋 Getting Started
+The core design centers around a 3-level inheritance chain:
 
-1. **Complete your implementation** in `project2_starter.py`
-2. **Test your code** by running: `python project2_starter.py`
-3. **Run automated tests** with: `python -m pytest tests/ -v`
-4. **Commit and push** to see GitHub test results
+- `Character` → base class for all characters
+- `Hero` → intermediate class that adds level and energy
+- `Warrior`, `Mage`, `Rogue` → specialized hero subclasses
 
-## 🏗️ What You're Building
+Each hero also holds a `Weapon` object, which is an example of **composition** (“has-a” relationship).
 
-### **Class Structure (6 Classes Total)**
+---
 
-```
-Character (base class)
-    ↓
-Player (inherits from Character)  
-    ↓
-Warrior, Mage, Rogue (inherit from Player)
+## Class Design
 
-Weapon (composition - separate class)
-```
+### Weapon (Composition)
 
-### **Required Stats for Each Class:**
+- **Attributes**: `name`, `base_damage`, `weapon_type`
+- **Methods**:
+  - `get_damage()`: Returns base damage.
+  - `get_description()`: Text description of the weapon.
 
-| Class   | Health | Strength | Magic | Special Ability |
-|---------|--------|----------|-------|-----------------|
-| Warrior | 120    | 15       | 5     | Power Strike    |
-| Mage    | 80     | 8        | 20    | Fireball        |
-| Rogue   | 90     | 12       | 10    | Sneak Attack    |
+### Character (Base Class – Level 1)
 
-## 🎮 Core Functionality
+- **Attributes**:
+  - `name`
+  - `max_health`
+  - `current_health`
+  - `weapon` (a `Weapon` instance)
+- **Methods**:
+  - `is_alive()`
+  - `take_damage(amount)`
+  - `heal(amount)`
+  - `attack(target)` – basic attack using weapon damage
+  - `use_special(target)` – placeholder (no special ability)
+  - `get_description()` – description string
 
-### **All Characters Must Have:**
-- `attack(target)` - Basic attack method
-- `take_damage(damage)` - Reduce health
-- `display_stats()` - Print character information
+### Hero (Intermediate Class – Level 2)
 
-### **Players Additionally Have:**
-- `character_class` attribute (like "Warrior", "Mage")
-- `level` and `experience` attributes
-- Enhanced `display_stats()` that shows player info
+Inherits from `Character`.
 
-### **Special Abilities (Each Class):**
-- **Warrior**: `power_strike(target)` - High damage attack
-- **Mage**: `fireball(target)` - Magic damage attack
-- **Rogue**: `sneak_attack(target)` - Critical hit attack
+- **Additional Attributes**:
+  - `level`
+  - `energy`
+- **Overridden Methods**:
+  - `attack(target)` – hero attack includes level-based bonus damage
+  - `get_description()` – includes level and energy
 
-### **Weapons (Composition):**
-- `Weapon(name, damage_bonus)` - Characters can HAVE weapons
-- `display_info()` - Show weapon information
+### Warrior / Mage / Rogue (Specialized Classes – Level 3)
 
-## ✅ Testing Your Code
+Each of these subclasses inherits from `Hero` and overrides behavior.
 
-### **Local Testing**
-```bash
-# Run all tests
-python -m pytest tests/ -v
+#### Warrior
 
-# Run specific test categories
-python -m pytest tests/test_inheritance.py -v
-python -m pytest tests/test_method_overriding.py -v
-python -m pytest tests/test_special_abilities.py -v
+- Extra attribute: `rage`
+- **Overrides**:
+  - `attack(target)`: Uses weapon damage + level + rage-based bonus, increases rage.
+  - `use_special(target)`: “Raging Slam” – consumes rage to deal heavy damage.
 
-# Test your main program
-python project2_starter.py
-```
+#### Mage
 
-### **GitHub Testing**
+- Extra attribute: `mana`
+- **Overrides**:
+  - `attack(target)`: Weaker basic attack but regenerates mana.
+  - `use_special(target)`: “Fireball” – spends mana to deal big magic damage.
 
-After pushing your code, check the **Actions** tab to see automated test results:
+#### Rogue
 
-- ✅ **Inheritance Tests** (20 points) - Class structure and inheritance chain
-- ✅ **Method Overriding Tests** (20 points) - Polymorphism and customized methods
-- ✅ **Special Abilities Tests** (15 points) - Character abilities and composition
+- Extra attribute: `focus`
+- **Overrides**:
+  - `attack(target)`: Damage increases with accumulated focus.
+  - `use_special(target)`: “Backstab” – consumes focus for burst damage.
 
-## 🎮 Example Usage
+---
 
-Your program should work like this:
+## Bonus Creative Features
 
-```python
-# Create characters (inheritance)
-warrior = Warrior("Marcus")
-mage = Mage("Aria")  
-rogue = Rogue("Shadow")
+I included the following creative elements beyond the minimum requirements:
 
-# Polymorphism - same method, different behavior
-for character in [warrior, mage, rogue]:
-    character.attack(target)  # Each attacks differently
+1. **Three distinct hero subclasses** (`Warrior`, `Mage`, `Rogue`) with:
+   - Different resource systems (`rage`, `mana`, `focus`).
+   - Different special ability mechanics.
+2. **Weapon system** with:
+   - `Weapon` class for composition.
+   - Different base damages and weapon types.
+3. **Demo battle simulation** via:
+   - `build_default_party()` to construct a standard party.
+   - `run_demo_battle()` to simulate a fight against a training dummy and showcase polymorphism.
 
-# Special abilities
-warrior.power_strike(enemy)
-mage.fireball(enemy)
-rogue.sneak_attack(enemy)
+---
 
-# Composition
-sword = Weapon("Iron Sword", 15)
-sword.display_info()
+## AI Usage
 
-# Test battle system (provided for you)
-battle = SimpleBattle(warrior, mage)
-battle.fight()
-```
+I used AI assistance (ChatGPT) to help:
 
-## 🎲 SimpleBattle System (Provided)
+- Design the inheritance structure (`Character` → `Hero` → subclasses).
+- Draft the initial versions of the methods for attacking and special abilities.
+- Create this `README.md` template and high-level documentation.
 
-You have a **SimpleBattle** class already written that you can use to test your characters:
 
-```python
-battle = SimpleBattle(character1, character2)
-battle.fight()  # Simulates a simple battle
-```
+---
 
-**⚠️ DO NOT MODIFY the SimpleBattle class** - it's provided for testing your implementations.
+## How to Run
 
-## ⚠️ Important Notes
+1. **Clone your GitHub repo** (from the assignment link):
 
-### **Protected Files**
-- **DO NOT MODIFY** files in the `tests/` directory
-- **DO NOT MODIFY** the `SimpleBattle` class
-- Modifying protected files will result in automatic academic integrity violation
-
-### **AI Usage Policy**
-- ✅ **Allowed**: AI assistance for implementation, debugging, learning
-- 📝 **Required**: Document AI usage in code comments
-- 🎯 **Must be able to explain**: Every class and method during interview
-
-## 🏆 Grading
-
-- **Inheritance Tests (20%)**: Proper 3-level inheritance chain
-- **Method Overriding (20%)**: Polymorphism and customized behaviors
-- **Special Abilities (15%)**: Character-specific methods and composition
-- **Code Quality (5%)**: Professional comments and documentation
-- **Interview (40%)**: Code explanation and live coding
-
-## 🎨 Bonus Creative Elements
-
-Feel free to add your own creative touches for bonus points:
-- Additional character classes beyond the three required
-- More weapon types with different properties
-- Enhanced special abilities with unique effects
+   ```bash
+   git clone <your-repo-url>
+   cd <your-repo-folder>
